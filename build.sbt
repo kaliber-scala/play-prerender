@@ -1,6 +1,6 @@
 name := "play-prerender"
 
-version := "0.1"
+version := "0.2"
 
 scalaVersion := "2.11.2"
 
@@ -18,6 +18,8 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-ws" % "2.3.0" % "provided")
 
 publishTo := rhinoflyRepo(version.value)
+
+credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")  
 
 def rhinoflyRepo(version: String) = {
     val repo = if (version endsWith "SNAPSHOT") "snapshot" else "release"

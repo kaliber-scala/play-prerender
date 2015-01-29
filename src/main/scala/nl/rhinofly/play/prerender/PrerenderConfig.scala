@@ -1,3 +1,3 @@
 package nl.rhinofly.play.prerender
 
-case class PrerenderConfig(service: String, token: Option[String])
+case class PrerenderConfig(service: String, ssl: Boolean, token: Option[String])
