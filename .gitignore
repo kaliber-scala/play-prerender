@@ -1,6 +1,7 @@
 /.target/
 /target/
-/project/
+/project/target/
+/project/project/
 .project
 .cache
 .classpath

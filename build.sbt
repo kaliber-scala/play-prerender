@@ -1,12 +1,14 @@
+releaseSettings
+
+ReleaseKeys.crossBuild := true
+
 name := "play-prerender"
 
-version := "0.3-SNAPSHOT"
-
-scalaVersion := "2.11.2"
+scalaVersion := "2.11.4"
 
 organization := "nl.rhinofly"
 
-crossScalaVersions := Seq("2.10.4", "2.11.2")
+crossScalaVersions := Seq("2.10.4", scalaVersion.value)
 
 resolvers ++= Seq(
   "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
