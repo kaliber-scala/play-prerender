@@ -61,7 +61,20 @@ case class PrerenderActionBuilders(config: Option[PrerenderConfig])(implicit ec:
     } getOrElse false
 
 
-  private val userAgentStrings = Seq("googlebot", "yahoo", "bingbot", "baiduspider", "facebookexternalhit", "twitterbot", "rogerbot", "linkedinbot", "embedly", "developer.google.com")
+  private val userAgentStrings = Seq(
+      "googlebot", 
+      "yahoo", 
+      "bingbot", 
+      "baiduspider", 
+      "facebookexternalhit", 
+      "twitterbot", 
+      "rogerbot", 
+      "linkedinbot", 
+      "embedly", 
+      "developer.google.com",
+      "mediapartners-google",
+      "mediapartners",
+      "adsbot-google")
 
 
 }
