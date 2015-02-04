@@ -22,16 +22,12 @@ case class PrerenderActionBuilders(config: Option[PrerenderConfig])(implicit ec:
   }} getOrElse result
 
   private def prerender(request: RequestHeader): Future[Result] = {
-    val requestHolder = config.map { config => 
-      val prefix = if(config.ssl)
-        "https://"
-      else
-        "http://"
-
+    val requestHolder = config.flatMap { config => config.token.map { token =>
+      val prefix = if(config.ssl) "https://" else "http://"
       val url = config.service + prefix + request.host + request.uri + request.rawQueryString
         
-      wsClient.url(url).withHeaders("X-Prerender-Token" -> "toHlPzTzRAyhSTOMldEe")
-    } getOrElse {
+      wsClient.url(url).withHeaders("X-Prerender-Token" -> token)
+    }} getOrElse {
       val url = config.get.service + "http://" + request.host + request.uri + request.rawQueryString
       wsClient.url(url)
     }
