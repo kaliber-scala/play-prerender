@@ -35,6 +35,8 @@ Usage
 To be fleshed out. In short, create an instance of `PrerenderActionBuilders` instance:
 
 ``` scala
+  import nl.rhinofly.play.prerender.{ PrerenderActionBuilders, PrerenderConfig }
+
   override lazy val prerenderActionBuilders = {
     val prerenderConfigOpt = if(current.configuration.underlying.getBoolean("prerender.enabled")) {
       Some(PrerenderConfig(
