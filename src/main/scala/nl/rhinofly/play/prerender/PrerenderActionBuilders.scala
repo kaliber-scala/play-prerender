@@ -28,7 +28,7 @@ case class PrerenderActionBuilders(config: Option[PrerenderConfig])(implicit ec:
       
       val url = config.service + prefix + request.host + request.uri
         
-      wsClient.url(url).withHeaders("X-Prerender-Token" -> token)
+      wsClient.url(url).withHeaders("X-Prerender-Token" -> token, "User-Agent" -> request.headers.get("User-Agent").getOrElse("NING/1.0"))
     }} getOrElse {
       val url = config.get.service + "http://" + request.host + request.uri
       wsClient.url(url)
