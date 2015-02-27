@@ -8,7 +8,7 @@ Installation
 
 ``` scala
   val appDependencies = Seq(
-    "nl.rhinofly" %% "play-prerender" % "0.4"
+    "nl.rhinofly" %% "play-prerender" % "0.6"
   )
 
   val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
