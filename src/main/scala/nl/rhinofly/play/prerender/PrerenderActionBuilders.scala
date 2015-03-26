@@ -1,47 +1,51 @@
 package nl.rhinofly.play.prerender
 
-import play.api.mvc.ActionBuilder
-import play.api.mvc.Request
-import scala.concurrent.Future
-import play.api.mvc.Result
-import scala.concurrent.ExecutionContext
+import java.net.ConnectException
+import play.api.http.Status.SERVICE_UNAVAILABLE
 import play.api.libs.ws.WSClient
-import play.api.mvc.RequestHeader
+import play.api.mvc.{ ActionBuilder, Request, RequestHeader, Result }
 import play.api.mvc.Results.Status
+import scala.concurrent.{ ExecutionContext, Future }
 
-case class PrerenderActionBuilders(config: Option[PrerenderConfig])(implicit ec: ExecutionContext, wsClient: WSClient) extends ActionBuilder[Request] {
+case class PrerenderActionBuilders(config: PrerenderConfig)(implicit ec: ExecutionContext, wsClient: WSClient) extends ActionBuilder[Request] {
 
-  override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] =
-    if(shouldBePrerendered(request)) {
-      prerender(request)
+  private val serviceUnavailable = Future.successful(Status(SERVICE_UNAVAILABLE))
+
+  def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] =
+    if (shouldBePrerendered(request)) {
+      prerender(request, 1)
     } else
       block(request).map(addPrerenderToken)
 
-  private def addPrerenderToken(result: Result) = config.flatMap { _.token.map { token =>
+  private def addPrerenderToken(result: Result) = config.token.map { token =>
     result.withHeaders("X-Prerender-Token" -> token)
-  }} getOrElse result
+  } getOrElse result
 
-  private def prerender(request: RequestHeader): Future[Result] = {    
-    val requestHolder = config.flatMap { config => config.token.map { token =>
-      val prefix = if(config.ssl) "https://" else "http://"
-      
-      
-      val url = config.service + prefix + request.host + request.uri
-        
-      wsClient.url(url).withHeaders("X-Prerender-Token" -> token, "User-Agent" -> request.headers.get("User-Agent").getOrElse("NING/1.0"))
-    }} getOrElse {
-      val url = config.get.service + "http://" + request.host + request.uri
+  private def prerender(request: RequestHeader, attempt: Int): Future[Result] = {
+    val prefix = if (config.ssl) "https://" else "http://"
+    val url = config.service + prefix + request.host + request.uri
+    val requestHolder = config.token.map { token =>
+      wsClient.url(url).withHeaders("X-Prerender-Token" -> token)
+    } getOrElse
       wsClient.url(url)
-    }
 
-    requestHolder.get.map { response =>
-      val headers = response.allHeaders.toSeq.flatMap { case (key, values) => values.map { key -> _ } }
-      Status(response.status)(response.body).withHeaders(headers:_*)
-    }
+    requestHolder.withHeaders("User-Agent" -> request.headers.get("User-Agent").getOrElse("NING/1.0"))
+      .get.map { response =>
+        val headers = response.allHeaders.toSeq.flatMap { case (key, values) => values.map { key -> _ } }
+        Status(response.status)(response.body).withHeaders(headers: _*)
+      } recoverWith {
+        case ce: ConnectException => {
+          if (attempt <= config.maximumAttempts)
+            prerender(request, attempt + 1)
+          else
+            serviceUnavailable
+        }
+        case other => serviceUnavailable
+      }
   }
 
   private def shouldBePrerendered(request: RequestHeader) =
-    config.isDefined && isGetRequest(request) && isSearchEngineRequest(request)
+    config.enabled && isGetRequest(request) && isSearchEngineRequest(request)
 
   private def isGetRequest(request: RequestHeader) = request.method == "GET"
 
@@ -54,25 +58,23 @@ case class PrerenderActionBuilders(config: Option[PrerenderConfig])(implicit ec:
   private def hasSearchEngineUserAgent(request: RequestHeader) =
     request.headers.get("User-Agent").map { userAgent =>
       val userAgentLower = userAgent.toLowerCase
-      if(userAgentStrings exists (userAgentLower contains _)) true
+      if (userAgentStrings exists (userAgentLower contains _)) true
       else false
     } getOrElse false
 
-
   private val userAgentStrings = Seq(
-      "googlebot", 
-      "yahoo", 
-      "bingbot", 
-      "baiduspider", 
-      "facebookexternalhit", 
-      "twitterbot", 
-      "rogerbot", 
-      "linkedinbot", 
-      "embedly", 
-      "developer.google.com",
-      "mediapartners-google",
-      "mediapartners",
-      "adsbot-google")
-
+    "googlebot",
+    "yahoo",
+    "bingbot",
+    "baiduspider",
+    "facebookexternalhit",
+    "twitterbot",
+    "rogerbot",
+    "linkedinbot",
+    "embedly",
+    "developer.google.com",
+    "mediapartners-google",
+    "mediapartners",
+    "adsbot-google")
 
 }
