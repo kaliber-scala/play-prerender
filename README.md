@@ -8,7 +8,7 @@ Installation
 
 ``` scala
   val appDependencies = Seq(
-    "nl.rhinofly" %% "play-prerender" % "0.6"
+    "nl.rhinofly" %% "play-prerender" % "0.7"
   )
 
   val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
@@ -27,6 +27,8 @@ prerender.enabled = true
 prerender.service = "http://localhost:3000/"
 # Token for prerender.io. Will be shown in X-Prerender-Token response header on the index page. Not needed if you run prerender.io server locally.
 # prerender.token =
+# Maximum attempts done in the case Prerender fails (default: 1)
+prerender.maximumAttempts = 2
 ```
 
 Usage
@@ -38,13 +40,14 @@ To be fleshed out. In short, create an instance of `PrerenderActionBuilders` ins
   import nl.rhinofly.play.prerender.{ PrerenderActionBuilders, PrerenderConfig }
 
   override lazy val prerenderActionBuilders = {
-    val prerenderConfigOpt = if(current.configuration.underlying.getBoolean("prerender.enabled")) {
-      Some(PrerenderConfig(
-        service = current.configuration.underlying.getString("prerender.service"),
-        token = current.configuration.getString("prerender.token")))
-    } else None
+    val config = PrerenderConfig(
+      enabled = current.configuration.getBoolean("prerender.enabled").getOrElse(false),
+      service = current.configuration.getString("prerender.service").getOrElse(""),
+      ssl = current.configuration.getBoolean("prerender.ssl").getOrElse(false),
+      token = current.configuration.getString("prerender.token"),
+      maximumAttempts = current.configuration.getInt("prerender.maximumAttempts").getOrElse(1))
 
-    PrerenderActionBuilders(prerenderConfigOpt)
+    PrerenderActionBuilders(config)
   }
 ```
 
