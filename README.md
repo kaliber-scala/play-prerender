@@ -58,6 +58,19 @@ Then use this to create an action, for example:
     Assets.at("/public", "index.html")(request)
   }
 ```
+User agents
+-------
+Currently supports the following user agents:
+* googlebot
+* yahoo
+* bingbot
+* baiduspider
+* facebookexternalhit
+* twitterbot
+* rogerbot
+* linkedinbot
+* embedly
+* developer.google.com
 
 Licence
 -------
