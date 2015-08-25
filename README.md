@@ -1,14 +1,12 @@
-play-prerender
-==============
+# play-prerender
 
 Library to use prerender.io with Play Framework
 
-Installation
-------------
+## Installation
 
 ``` scala
   val appDependencies = Seq(
-    "nl.rhinofly" %% "play-prerender" % "0.7"
+    "nl.rhinofly" %% "play-prerender" % "0.8"
   )
 
   val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
@@ -16,7 +14,7 @@ Installation
   )
 ```
 
-Configuration
+## Configuration
 -------------
 
 Configured programmatically. You can use the following config settings if you use the sample code from the `Usage` section.
@@ -29,10 +27,32 @@ prerender.service = "http://localhost:3000/"
 # prerender.token =
 # Maximum attempts done in the case Prerender fails (default: 1)
 prerender.maximumAttempts = 2
+# If you require a user agent which is not present in the default list it can be added through through this configuration option.
+prerender.additionalAgents = []
 ```
 
-Usage
------
+### Default user agents
+
+If you feel like a useragent should be into the default list please create a new issue with a statement to why you feel it should be added to the list.
+
+```
+ "googlebot",
+ "yahoo",
+ "bingbot",
+ "baiduspider"
+ "facebookexternalhit",
+ "twitterbot",
+ "rogerbot",
+ "linkedinbot",
+ "embedly",
+ "mediapartners-google",
+ "mediapartners",
+ "adsbot-google"
+```
+
+
+
+## Usage
 
 To be fleshed out. In short, create an instance of `PrerenderActionBuilders` instance:
 
@@ -59,6 +79,5 @@ Then use this to create an action, for example:
   }
 ```
 
-Licence
--------
+## Licence
 MIT License.

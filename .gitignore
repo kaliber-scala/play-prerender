@@ -4,4 +4,6 @@
 /project/project/
 .project
 .cache
+.cache-main
+.cache-tests
 .classpath

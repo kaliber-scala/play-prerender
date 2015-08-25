@@ -58,23 +58,30 @@ case class PrerenderActionBuilders(config: PrerenderConfig)(implicit ec: Executi
   private def hasSearchEngineUserAgent(request: RequestHeader) =
     request.headers.get("User-Agent").map { userAgent =>
       val userAgentLower = userAgent.toLowerCase
-      if (userAgentStrings exists (userAgentLower contains _)) true
+      if (userAgents exists (userAgentLower contains _)) true
       else false
     } getOrElse false
 
-  private val userAgentStrings = Seq(
+  private val searchUserAgents = Seq(
     "googlebot",
     "yahoo",
     "bingbot",
-    "baiduspider",
+    "baiduspider"
+  )
+
+  private val socialUserAgents = Seq(
     "facebookexternalhit",
     "twitterbot",
     "rogerbot",
     "linkedinbot",
-    "embedly",
-    "developer.google.com",
+    "embedly"
+  )
+
+  private val adUserAgents = Seq(
     "mediapartners-google",
     "mediapartners",
-    "adsbot-google")
+    "adsbot-google"
+  )
 
+  private val userAgents = searchUserAgents ++ socialUserAgents ++ adUserAgents ++ config.additionalAgents
 }
