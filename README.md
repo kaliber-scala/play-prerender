@@ -6,7 +6,7 @@ Library to use prerender.io with Play Framework
 
 ``` scala
   val appDependencies = Seq(
-    "nl.rhinofly" %% "play-prerender" % "0.8"
+    "nl.rhinofly" %% "play-prerender" % "0.9"
   )
 
   val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
@@ -23,7 +23,7 @@ Configured programmatically. You can use the following config settings if you us
 prerender.enabled = true
 # Probably 'http://localhost:3000/ if you run prerender.io locally, or 'http://service.prerender.io/' if you use the hosted prerender.io service
 prerender.service = "http://localhost:3000/"
-# Token for prerender.io. Will be shown in X-Prerender-Token response header on the index page. Not needed if you run prerender.io server locally.
+# Token for prerender.io. Not needed if you run prerender.io server locally.
 # prerender.token =
 # Maximum attempts done in the case Prerender fails (default: 1)
 prerender.maximumAttempts = 2
