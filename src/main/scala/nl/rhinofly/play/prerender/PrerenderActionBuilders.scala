@@ -14,12 +14,7 @@ case class PrerenderActionBuilders(config: PrerenderConfig)(implicit ec: Executi
   def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] =
     if (shouldBePrerendered(request)) {
       prerender(request, 1)
-    } else
-      block(request).map(addPrerenderToken)
-
-  private def addPrerenderToken(result: Result) = config.token.map { token =>
-    result.withHeaders("X-Prerender-Token" -> token)
-  } getOrElse result
+    } else block(request)
 
   private def prerender(request: RequestHeader, attempt: Int): Future[Result] = {
     val prefix = if (config.ssl) "https://" else "http://"
