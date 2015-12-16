@@ -1,4 +1,4 @@
-package nl.rhinofly.play.prerender
+package net.kaliber.play.prerender
 
 import java.net.ConnectException
 import play.api.http.Status.SERVICE_UNAVAILABLE

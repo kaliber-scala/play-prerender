@@ -1,4 +1,4 @@
-package nl.rhinofly.play.prerender
+package net.kaliber.play.prerender
 
 case class PrerenderConfig(
   enabled: Boolean,

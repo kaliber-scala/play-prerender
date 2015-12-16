@@ -6,11 +6,11 @@ Library to use prerender.io with Play Framework
 
 ``` scala
   val appDependencies = Seq(
-    "nl.rhinofly" %% "play-prerender" % "0.9"
+    "net.kaliber" %% "play-prerender" % "0.9"
   )
 
   val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
-    resolvers += "Rhinofly Internal Release Repository" at "http://maven-repository.rhinofly.net:8081/artifactory/libs-release-local"
+    resolvers += "Kaliber Release Repository" at "https://jars.kaliber.io/artifactory/libs-release-local"
   )
 ```
 
