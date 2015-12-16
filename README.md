@@ -6,7 +6,7 @@ Library to use prerender.io with Play Framework
 
 ``` scala
   val appDependencies = Seq(
-    "net.kaliber" %% "play-prerender" % "0.9"
+    "net.kaliber" %% "play-prerender" % "0.10"
   )
 
   val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
