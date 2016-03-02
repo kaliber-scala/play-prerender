@@ -1,6 +1,5 @@
 package net.kaliber.play.prerender
 
-
 case class PrerenderConfig(
   enabled: Boolean,
   service: String,

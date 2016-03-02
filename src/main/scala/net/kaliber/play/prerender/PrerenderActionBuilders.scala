@@ -47,7 +47,7 @@ case class PrerenderActionBuilders(config: PrerenderConfig)(implicit ec: Executi
   private def isSearchEngineRequest(request: RequestHeader) =
     isEscapedFragmentUrl(request) || hasSearchEngineUserAgent(request)
 
-  private def hasOnlyAllowedParams(request: RequestHeader): Boolean = {
+  private def hasOnlyAllowedParams(request: RequestHeader) = {
     val requestParams = request.queryString.keys.toSet
     requestParams subsetOf config.limitedParams.getOrElse(requestParams)
   }
