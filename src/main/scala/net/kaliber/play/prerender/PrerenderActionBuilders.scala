@@ -1,6 +1,7 @@
 package net.kaliber.play.prerender
 
 import java.net.ConnectException
+import com.google.common.annotations.VisibleForTesting
 import play.api.http.Status.SERVICE_UNAVAILABLE
 import play.api.libs.ws.WSClient
 import play.api.mvc.{ ActionBuilder, Request, RequestHeader, Result }
@@ -40,12 +41,24 @@ case class PrerenderActionBuilders(config: PrerenderConfig)(implicit ec: Executi
   }
 
   private def shouldBePrerendered(request: RequestHeader) =
-    config.enabled && isGetRequest(request) && isSearchEngineRequest(request)
+    config.enabled && isGetRequest(request) && isSearchEngineRequest(request) && hasOnlyAllowedParams(request) && !isExcludedWithRegex(request)
 
   private def isGetRequest(request: RequestHeader) = request.method == "GET"
 
   private def isSearchEngineRequest(request: RequestHeader) =
     isEscapedFragmentUrl(request) || hasSearchEngineUserAgent(request)
+
+  private def hasOnlyAllowedParams(request: RequestHeader): Boolean = {
+    val requestParams = request.queryString.keys.toSet
+    requestParams subsetOf config.limitedParams.getOrElse(requestParams)
+  }
+
+  private def isExcludedWithRegex(request: RequestHeader) = {
+    config.excludeRegex.getOrElse("").r.findFirstMatchIn(request.uri) match {
+      case None => false
+      case Some(matchingSubstring) => !matchingSubstring.toString().isEmpty
+    }
+  }
 
   private def isEscapedFragmentUrl(request: RequestHeader) =
     request.queryString.contains("_escaped_fragment_")
