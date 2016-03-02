@@ -1,7 +1,5 @@
 package net.kaliber.play.prerender
 
-import play.api.mvc.RequestHeader
-
 
 case class PrerenderConfig(
   enabled: Boolean,

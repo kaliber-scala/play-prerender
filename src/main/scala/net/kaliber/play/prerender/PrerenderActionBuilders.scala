@@ -1,7 +1,6 @@
 package net.kaliber.play.prerender
 
 import java.net.ConnectException
-import com.google.common.annotations.VisibleForTesting
 import play.api.http.Status.SERVICE_UNAVAILABLE
 import play.api.libs.ws.WSClient
 import play.api.mvc.{ ActionBuilder, Request, RequestHeader, Result }
