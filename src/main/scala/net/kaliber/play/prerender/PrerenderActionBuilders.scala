@@ -40,7 +40,8 @@ case class PrerenderActionBuilders(config: PrerenderConfig)(implicit ec: Executi
   }
 
   private def shouldBePrerendered(request: RequestHeader) =
-    config.enabled && isGetRequest(request) && isSearchEngineRequest(request) && hasOnlyAllowedParams(request) && !isExcludedWithRegex(request)
+    config.enabled && isGetRequest(request) && isSearchEngineRequest(request) &&
+    hasOnlyAllowedParams(request) && !isExcludedWithRegex(request)
 
   private def isGetRequest(request: RequestHeader) = request.method == "GET"
 

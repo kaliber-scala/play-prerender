@@ -6,7 +6,7 @@ Library to use prerender.io with Play Framework
 
 ``` scala
   val appDependencies = Seq(
-    "net.kaliber" %% "play-prerender" % "0.10"
+    "net.kaliber" %% "play-prerender" % "0.12-SNAPSHOT"
   )
 
   val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
@@ -29,6 +29,10 @@ prerender.service = "http://localhost:3000/"
 prerender.maximumAttempts = 2
 # If you require a user agent which is not present in the default list it can be added through through this configuration option.
 prerender.additionalAgents = []
+# (Optional) When set, a URI will only be prerendered if its query parameter names are included in the limitedParams configuration option.
+prerender.limitedParams = Option(Set("goodparam", "allowedparam"))
+# (Optional) When set, URIs will not be prerendered if the excludeRegex matches any part of the URI.
+prerender.excludeRegex = Option("2222|1111")
 ```
 
 ### Default user agents
