@@ -53,12 +53,10 @@ case class PrerenderActionBuilders(config: PrerenderConfig)(implicit ec: Executi
     requestParams subsetOf config.limitedParams.getOrElse(requestParams)
   }
 
-  private def isExcludedWithRegex(request: RequestHeader) = {
-    config.excludeRegex.getOrElse("").r.findFirstMatchIn(request.uri) match {
-      case None => false
-      case Some(matchingSubstring) => !matchingSubstring.toString().isEmpty
-    }
-  }
+  private def isExcludedWithRegex(request: RequestHeader) =
+    config.excludeRegex
+      .flatMap(_.r.findFirstMatchIn(request.uri))
+      .isDefined
 
   private def isEscapedFragmentUrl(request: RequestHeader) =
     request.queryString.contains("_escaped_fragment_")
