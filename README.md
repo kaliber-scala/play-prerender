@@ -30,9 +30,9 @@ prerender.maximumAttempts = 2
 # If you require a user agent which is not present in the default list it can be added through through this configuration option.
 prerender.additionalAgents = []
 # (Optional) When set, a URI will only be prerendered if its query parameter names are included in the limitedParams configuration option.
-prerender.limitedParams = Option(Set("goodparam", "allowedparam"))
+prerender.limitedParams = ["goodparam", "allowedparam"]
 # (Optional) When set, URIs will not be prerendered if the excludeRegex matches any part of the URI.
-prerender.excludeRegex = Option("2222|1111")
+prerender.excludeRegex = "2222|1111"
 ```
 
 ### Default user agents
@@ -70,7 +70,8 @@ To be fleshed out. In short, create an instance of `PrerenderActionBuilders` ins
       ssl = current.configuration.getBoolean("prerender.ssl").getOrElse(false),
       token = current.configuration.getString("prerender.token"),
       maximumAttempts = current.configuration.getInt("prerender.maximumAttempts").getOrElse(1))
-
+      excludeRegex = current.configuration.getString("prerenderen.excludeRegex")
+      limitedParams = current.configuration.getStringList("prerenderen.limitedParams").map(_.toSet)
     PrerenderActionBuilders(config)
   }
 ```
