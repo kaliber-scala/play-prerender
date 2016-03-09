@@ -40,12 +40,23 @@ case class PrerenderActionBuilders(config: PrerenderConfig)(implicit ec: Executi
   }
 
   private def shouldBePrerendered(request: RequestHeader) =
-    config.enabled && isGetRequest(request) && isSearchEngineRequest(request)
+    config.enabled && isGetRequest(request) && isSearchEngineRequest(request) &&
+    hasOnlyAllowedParams(request) && !isExcludedWithRegex(request)
 
   private def isGetRequest(request: RequestHeader) = request.method == "GET"
 
   private def isSearchEngineRequest(request: RequestHeader) =
     isEscapedFragmentUrl(request) || hasSearchEngineUserAgent(request)
+
+  private def hasOnlyAllowedParams(request: RequestHeader) = {
+    val requestParams = request.queryString.keys.toSet
+    requestParams subsetOf config.limitedParams.getOrElse(requestParams)
+  }
+
+  private def isExcludedWithRegex(request: RequestHeader) =
+    config.excludeRegex
+      .flatMap(_.r.findFirstMatchIn(request.uri))
+      .isDefined
 
   private def isEscapedFragmentUrl(request: RequestHeader) =
     request.queryString.contains("_escaped_fragment_")
